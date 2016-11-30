@@ -26,22 +26,26 @@ namespace ActivitatAutenticacio
             {
                 MessageBox.Show("Has d'omplir tots els camps");
             }
-            else if (signPass.Text != signPass2.Text) //Comprovem que els camps de les contrasenyes coincideixin
+            else if (signName.Text.Contains(",") || signName.Text.Contains(" "))
             {
-                MessageBox.Show("Les contrasenyes han de coincidir");
+                MessageBox.Show("No s'accepten caracters especials com ',' o espais");
             }
-            else
-            {
-                String username;
-                String password;
-                //Asignem cada camp a una variable
-                username = signName.Text;  
+                else if (signPass.Text != signPass2.Text) //Comprovem que els camps de les contrasenyes coincideixin
+                {
+                    MessageBox.Show("Les contrasenyes han de coincidir");
+                }
+                else
+                {
+                    String username;
+                    String password;
+                    //Asignem cada camp a una variable
+                    username = signName.Text;
 
-                password = signPass.Text;
+                    password = signPass.Text;
 
-                signIn(username, password);
+                    signIn(username, password);
 
-            }
+                }
         }
 
         private void signIn(String username, String password)
@@ -54,9 +58,12 @@ namespace ActivitatAutenticacio
             String saltConverted = Convert.ToBase64String(salt);
 
             String newUser = username + "," + saltConverted + "," + hash; //Conquetenem tota la info
-            
+
             //Guardem tota la informació al arxiu
-            System.IO.File.AppendAllText(filepath, newUser);
+            using (StreamWriter file = new StreamWriter(filepath, true))
+            {
+                file.WriteLine(newUser);
+            }
             MessageBox.Show("Usuari creat correctament.");
 
         }
